@@ -8,20 +8,20 @@
 #include <string>
 typedef void *DLLHandle;
 
-void *load_handle(const char *filename) { return dlopen(filename, RTLD_LAZY | RTLD_GLOBAL); }
+inline void *load_handle(const char *filename) { return dlopen(filename, RTLD_LAZY | RTLD_GLOBAL); }
 
-std::string get_dll_error() { return std::string(dlerror()); }
+inline std::string get_dll_error() { return std::string(dlerror()); }
 
-void *get_function_by_name(DLLHandle handle, const char *name) { return dlsym(handle, name); }
+inline void *get_function_by_name(DLLHandle handle, const char *name) { return dlsym(handle, name); }
 
-void close_handle(DLLHandle handle) { dlclose(handle); }
+inline void close_handle(DLLHandle handle) { dlclose(handle); }
 
-std::filesystem::path get_plugin_dir()
+inline std::filesystem::path get_plugin_dir()
 {
     // For linux use /proc/self/exe
     return std::filesystem::canonical("/proc/self/exe").parent_path().append("plugins");
 }
-const char *get_plugin_extension()
+inline const char *get_plugin_extension()
 {
     return ".so";
 }
