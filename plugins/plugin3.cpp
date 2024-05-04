@@ -1,4 +1,4 @@
-#include "image-filter.h"
+#include "image_filter.h"
 extern "C"
 {
     const char* Plugin_Name()

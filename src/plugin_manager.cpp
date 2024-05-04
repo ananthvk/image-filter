@@ -1,10 +1,5 @@
 #include "plugin_manager.hpp"
 
-extern "C"
-{
-    EXPORT void Foo() { std::cout << "This is FOOOOO" << std::endl; }
-}
-
 Plugin::Plugin(const std::string &path) : path(path)
 {
     handle = load_handle(path.c_str());
