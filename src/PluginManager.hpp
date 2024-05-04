@@ -50,11 +50,19 @@ class PluginManager
         }
         for (const auto &dirEntry : std::filesystem::directory_iterator(path))
         {
+            // Check if the entry exists, also check if it is a regular file or a symlink
             if (std::filesystem::exists(dirEntry) && (std::filesystem::is_regular_file(dirEntry) ||
                                                       std::filesystem::is_symlink(dirEntry)))
             {
+                // Check if the file has the OS specific extension - i.e. .dll for windows, .so for
+                // linux
+                if (dirEntry.path().extension() != get_plugin_extension())
+                {
+                    continue;
+                }
                 try
                 {
+                    // Load the plugin
                     plugins.push_back(std::make_shared<Plugin>(dirEntry.path().generic_string()));
                 }
                 catch (std::exception &e)

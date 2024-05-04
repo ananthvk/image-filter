@@ -21,4 +21,8 @@ std::filesystem::path get_plugin_dir()
     // For linux use /proc/self/exe
     return std::filesystem::canonical("/proc/self/exe").parent_path().append("plugins");
 }
+const char *get_plugin_extension()
+{
+    return ".so";
+}
 #endif
