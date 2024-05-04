@@ -1,6 +1,6 @@
 #include "plugin_manager.hpp"
 
-Plugin::Plugin(const std::string &path) : path(path)
+Plugin::Plugin(const std::filesystem::path &path) : path(path)
 {
     handle = load_handle(path.c_str());
     if (!handle)
@@ -14,14 +14,14 @@ Plugin::Plugin(const std::string &path) : path(path)
         throw std::runtime_error(get_dll_error());
     }
     plugin_get_name = (const char *(*)())fptr;
-    std::cout << "[INFO] Loaded plugin: " << path << std::endl;
+    std::cout << "[INFO] Loaded plugin: " << path.filename() << std::endl;
 }
 
 Plugin::~Plugin()
 {
     close_handle(handle);
     std::cout << "[INFO] "
-              << "Unloaded " << path << std::endl;
+              << "Unloaded " << path.filename() << std::endl;
 }
 
 const char *Plugin::get_name() { return plugin_get_name(); }

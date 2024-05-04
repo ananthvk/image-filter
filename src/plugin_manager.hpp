@@ -8,11 +8,11 @@
 class Plugin
 {
     DLLHandle handle;
-    std::string path;
+    std::filesystem::path path;
     const char *(*plugin_get_name)();
 
   public:
-    Plugin(const std::string &path);
+    Plugin(const std::filesystem::path &path);
 
     ~Plugin();
 
