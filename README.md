@@ -42,3 +42,18 @@ $ image-filter cat.png blur 3
 
 A plugin manager should read all shared objects / DLLs in a directory, use `dlopen` or `LoadLibraryEx` to load it, then find the required symbols.
 
+## How to run?
+
+Currently, for demonstrating runtime loading of plugins, this project builds a subproject `plugins`, after which the shared library files are stored in `plugins` folder of the build directory.
+
+To run this project,
+```
+$ git clone https://github.com/ananthvk/image-filter
+$ cd image-filter
+$ mkdir build
+$ cd build
+$ cmake ..
+$ cmake --build .
+$ ./image-filter
+```
+
