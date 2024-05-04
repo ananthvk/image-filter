@@ -9,6 +9,7 @@ class Plugin
 {
     DLLHandle handle;
     std::string path;
+    const char *(*plugin_get_name)();
 
   public:
     Plugin(const std::string &path) : path(path)
@@ -18,6 +19,13 @@ class Plugin
         {
             throw std::runtime_error(get_dll_error());
         }
+        // Load all required symbols from the DLL
+        void *fptr = get_function_by_name(handle, "Plugin_Name");
+        if (!fptr)
+        {
+            throw std::runtime_error(get_dll_error());
+        }
+        plugin_get_name = (const char *(*)())fptr;
         std::cout << "[INFO] Loaded plugin: " << path << std::endl;
     }
 
@@ -27,6 +35,8 @@ class Plugin
         std::cout << "[INFO] "
                   << "Unloaded " << path << std::endl;
     }
+
+    const char *get_name() { return plugin_get_name(); }
 };
 
 class PluginManager
@@ -71,6 +81,14 @@ class PluginManager
                     std::cerr << e.what() << std::endl;
                 }
             }
+        }
+    }
+
+    void init()
+    {
+        for (auto &plugin : plugins)
+        {
+            std::cout << "[INFO] Initializing " << plugin->get_name() << std::endl;
         }
     }
 
