@@ -1,4 +1,4 @@
-#include "PluginManager.hpp"
+#include "plugin_manager.hpp"
 
 int main()
 {
