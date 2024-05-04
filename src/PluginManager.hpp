@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 class Plugin
 {
@@ -10,17 +11,63 @@ class Plugin
     std::string path;
 
   public:
-    Plugin(const std::string &path): path(path)
+    Plugin(const std::string &path) : path(path)
     {
         handle = load_handle(path.c_str());
         if (!handle)
         {
             throw std::runtime_error(get_dll_error());
         }
+        std::cout << "[INFO] Loaded plugin: " << path << std::endl;
     }
+
     ~Plugin()
     {
         close_handle(handle);
-        std::cout << "[INFO] " << "Unloaded " << path << std::endl;
+        std::cout << "[INFO] "
+                  << "Unloaded " << path << std::endl;
     }
+};
+
+class PluginManager
+{
+    std::vector<std::shared_ptr<Plugin>> plugins;
+
+  public:
+    // Load all plugins from the specified path
+    void load_from_directory(const std::filesystem::path &path)
+    {
+        // First check if the path exists
+        if (!std::filesystem::exists(path))
+        {
+            std::cerr << "[ERROR] Loading plugins: " << path << " does not exist" << std::endl;
+            return;
+        }
+        if (!std::filesystem::is_directory(path))
+        {
+            std::cerr << "[ERROR] Loading plugins: " << path << " is not directory" << std::endl;
+            return;
+        }
+        for (const auto &dirEntry : std::filesystem::directory_iterator(path))
+        {
+            if (std::filesystem::exists(dirEntry) && (std::filesystem::is_regular_file(dirEntry) ||
+                                                      std::filesystem::is_symlink(dirEntry)))
+            {
+                try
+                {
+                    plugins.push_back(std::make_shared<Plugin>(dirEntry.path().generic_string()));
+                }
+                catch (std::exception &e)
+                {
+                    std::cerr << "[ERROR] Could not load " << dirEntry << std::endl;
+                    std::cerr << e.what() << std::endl;
+                }
+            }
+        }
+    }
+
+    size_t number_of_plugins_loaded() { return plugins.size(); }
+
+    // Unloads all loaded plugins
+    void unload() { plugins.clear(); }
 };
