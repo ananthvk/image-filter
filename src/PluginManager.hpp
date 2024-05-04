@@ -1,27 +1,26 @@
-#include "os_specific_impl.hpp"
 #pragma once
-struct AppContext;
+#include "os_specific_impl.hpp"
+#include <iostream>
+#include <stdexcept>
+#include <string>
 
 class Plugin
 {
     DLLHandle handle;
+    std::string path;
 
   public:
-    void set_handle(DLLHandle handle) { this->handle = handle; }
-
-    void Init(AppContext *context) {
-        void *fptr = get_function_by_name(handle, "Plugin_Init");
+    Plugin(const std::string &path): path(path)
+    {
+        handle = load_handle(path.c_str());
+        if (!handle)
+        {
+            throw std::runtime_error(get_dll_error());
+        }
     }
-
-    void SetName(AppContext *context, const char *name) {
-        void *fptr = get_function_by_name(handle, "Plugin_SetName");
-    }
-
-    void Execute(AppContext *context) {
-        void *fptr = get_function_by_name(handle, "Plugin_Execute");
-    }
-
-    void Destroy(AppContext *context) {
-        void *fptr = get_function_by_name(handle, "Plugin_Destroy");
+    ~Plugin()
+    {
+        close_handle(handle);
+        std::cout << "[INFO] " << "Unloaded " << path << std::endl;
     }
 };

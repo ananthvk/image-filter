@@ -40,23 +40,5 @@ $ image-filter cat.png blur 3
 
 ## API
 
-A plugin should be implemented with the following API
-```
-Plugin_Init(AppContext *context);
-Plugin_SetName(AppContext *context, const char* name);
-Plugin_Execute(AppContext *context);
-Plugin_Destroy(AppContext *context);
-```
-
-The following API should be provided
-```
-App_LoadImage(AppContext *context);
-App_CreateImage(AppContext *context, int width, int height, Color default);
-App_SaveImage(AppContext *context, const char* filename);
-App_GetWidth();
-App_GetHeight();
-App_GetChannels();
-App_GetImage();
-```
-
 A plugin manager should read all shared objects / DLLs in a directory, use `dlopen` or `LoadLibraryEx` to load it, then find the required symbols.
+
