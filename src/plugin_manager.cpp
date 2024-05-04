@@ -2,7 +2,7 @@
 
 extern "C"
 {
-    void Foo() { std::cout << "This is FOOOOO" << std::endl; }
+    EXPORT void Foo() { std::cout << "This is FOOOOO" << std::endl; }
 }
 
 Plugin::Plugin(const std::string &path) : path(path)
