@@ -5,6 +5,11 @@
 #include <string>
 #include <vector>
 
+extern "C"
+{
+    void Foo() { std::cout << "This is FOOOOO" << std::endl; }
+}
+
 class Plugin
 {
     DLLHandle handle;
