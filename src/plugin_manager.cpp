@@ -13,7 +13,6 @@ bool PluginManager_command_exists(const char *command)
     return commands.find(command) != commands.end();
 }
 
-
 Plugin::Plugin(const std::filesystem::path &path) : path(path)
 {
     handle = load_handle(path.c_str());
@@ -99,6 +98,7 @@ void PluginManager::init()
     {
         std::cout << "[INFO] Initializing " << plugin->get_name() << " [" << plugin->get_id() << "]"
                   << std::endl;
+        plugin->init();
     }
 }
 
@@ -106,3 +106,34 @@ size_t PluginManager::number_of_plugins_loaded() { return plugins.size(); }
 
 // Unloads all loaded plugins
 void PluginManager::unload() { plugins.clear(); }
+
+void PluginManager::list_commands()
+{
+    if (commands.empty())
+    {
+        std::cout << "No commands registered .... check if plugins have been loaded" << std::endl;
+        return;
+    }
+    for (const auto &command : commands)
+    {
+        if (command.first.size() >= 2 && command.first[0] == '-' && command.first[1] == '-')
+        {
+            // A hidden command, do not show
+            continue;
+        }
+        std::cout << command.first << " ";
+    }
+    std::cout << std::endl;
+}
+
+void PluginManager::execute_command(const std::string &command)
+{
+    if(commands.find(command) != commands.end())
+    {
+        commands[command](NULL);
+    }
+    else
+    {
+        std::cerr << "Unrecognized command \"" << command <<"\", type \"list\" to see list of available commands" << std::endl;
+    }
+}

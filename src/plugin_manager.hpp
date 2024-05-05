@@ -49,4 +49,8 @@ class PluginManager
     size_t number_of_plugins_loaded();
 
     void unload();
+
+    void list_commands();
+
+    void execute_command(const std::string &command);
 };

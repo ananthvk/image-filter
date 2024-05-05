@@ -1,6 +1,6 @@
 project(plugins)
 
-set(SOURCES "plugin1.cpp;plugin2.cpp;plugin3.cpp")
+set(SOURCES basic_filters.cpp)
 foreach(SRC ${SOURCES})
     get_filename_component(LIB_NAME ${SRC} NAME_WE)
     add_library(${LIB_NAME} SHARED ${SRC})

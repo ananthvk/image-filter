@@ -75,10 +75,12 @@ extern "C"
     // This function frees the global stored image
     void ImageFilter_reset();
 
+    // Take and return a NULL pointer for future usage, not currently used
+    // currently both arg and the return will be NULL
     typedef void *(*fptr)(void *arg);
 
     // Registers a command which can be used in the interactive prompt
-    // commands starting with __ are hidden
+    // commands starting with -- are hidden
     void PluginManager_register(const char *command, fptr fp);
 
     bool PluginManager_command_exists(const char *command);

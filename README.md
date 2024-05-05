@@ -58,6 +58,7 @@ bool ImageFilter_load_image(const char *filename, int width, int height, int cha
 
 The Plugin must implement the following API
 ```
+#include "image_filter.h"
 extern "C" 
 {
     const char* Plugin_Name()
