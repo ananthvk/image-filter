@@ -16,6 +16,8 @@ class Plugin
     std::filesystem::path path;
     const char *(*plugin_get_name)();
     const char *(*plugin_get_id)();
+    void (*plugin_init)();
+    void (*plugin_destroy)();
 
   public:
     Plugin(const std::filesystem::path &path);
@@ -25,6 +27,10 @@ class Plugin
     const char *get_name();
 
     const char *get_id();
+
+    void init();
+
+    void destroy();
 };
 
 /*

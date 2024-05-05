@@ -45,8 +45,9 @@ extern "C"
     void ImageFilter_destroy_image(uint8_t *data);
 
     /*
-     * This function sets an image returned by `ImageFilter_create_image`. After calling this function
-     * ownership of data is transferred to the main program. The plugin *MUST* not free or delete data
+     * This function sets an image returned by `ImageFilter_create_image`. After calling this
+     * function ownership of data is transferred to the main program. The plugin *MUST* not free or
+     * delete data
      * @param width width of the image
      * @param height height of the image
      * @param channels number of channels in the image
@@ -73,4 +74,14 @@ extern "C"
 
     // This function frees the global stored image
     void ImageFilter_reset();
+
+    typedef void *(*fptr)(void *arg);
+
+    // Registers a command which can be used in the interactive prompt
+    // commands starting with __ are hidden
+    void PluginManager_register(const char *command, fptr fp);
+
+    bool PluginManager_command_exists(const char *command);
+
+    void *PluginManager_execute(const char *command, void *arg);
 }

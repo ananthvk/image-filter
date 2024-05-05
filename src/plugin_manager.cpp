@@ -1,4 +1,18 @@
 #include "plugin_manager.hpp"
+#include "image_filter.h"
+#include <map>
+
+static std::map<std::string, fptr> commands;
+
+void PluginManager_register(const char *command, fptr fp) { commands[command] = fp; }
+
+void *PluginManager_execute(const char *command, void *arg) { return commands[command](arg); }
+
+bool PluginManager_command_exists(const char *command)
+{
+    return commands.find(command) != commands.end();
+}
+
 
 Plugin::Plugin(const std::filesystem::path &path) : path(path)
 {
@@ -8,34 +22,28 @@ Plugin::Plugin(const std::filesystem::path &path) : path(path)
         throw std::runtime_error(get_dll_error());
     }
     // Load all required symbols from the DLL
-    void *fptr = get_function_by_name(handle, "Plugin_Name");
-    if (!fptr)
-    {
-        auto err = get_dll_error();
-        dlclose(handle);
-        // If any of them is not found, throw an error
-        throw std::runtime_error(err);
-    }
-    plugin_get_name = (const char *(*)())fptr;
-    fptr = get_function_by_name(handle, "Plugin_Id");
-    if (!fptr)
-    {
-        auto err = get_dll_error();
-        dlclose(handle);
-        // If any of them is not found, throw an error
-        throw std::runtime_error(err);
-    }
-    plugin_get_id = (const char *(*)())fptr;
+    plugin_get_name = (const char *(*)())get_symbol(handle, "Plugin_Name");
+    plugin_get_id = (const char *(*)())get_symbol(handle, "Plugin_Id");
+    plugin_init = (void (*)())get_symbol(handle, "Plugin_Init");
+    plugin_destroy = (void (*)())get_symbol(handle, "Plugin_Destroy");
     std::cout << "[INFO] Loaded plugin: " << path.filename() << std::endl;
 }
 
 // Handle is automatically closed when destructor is run
-Plugin::~Plugin() { close_handle(handle);}
+Plugin::~Plugin()
+{
+    destroy();
+    close_handle(handle);
+}
 
 // Return the name of the plugin
 const char *Plugin::get_name() { return plugin_get_name(); }
 
 const char *Plugin::get_id() { return plugin_get_id(); }
+
+void Plugin::init() { plugin_init(); }
+
+void Plugin::destroy() { plugin_destroy(); }
 
 // This function loads all shared objects from the given path
 void PluginManager::load_from_directory(const std::filesystem::path &path)
@@ -89,7 +97,8 @@ void PluginManager::init()
 {
     for (auto &plugin : plugins)
     {
-        std::cout << "[INFO] Initializing " << plugin->get_name() << std::endl;
+        std::cout << "[INFO] Initializing " << plugin->get_name() << " [" << plugin->get_id() << "]"
+                  << std::endl;
     }
 }
 

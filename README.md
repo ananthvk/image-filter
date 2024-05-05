@@ -62,7 +62,19 @@ extern "C"
 {
     const char* Plugin_Name()
     {
-        
+        // Return the name of the plugin
+    }
+    const char* Plugin_Id()
+    {
+        // Return the unique ID of the plugin (preferably UUID)
+    }
+    void Plugin_Init()
+    {
+        // Perform initialization, such as registering commands
+    }
+    void Plugin_Destroy()
+    {
+        // Cleanup resources
     }
 }
 ```

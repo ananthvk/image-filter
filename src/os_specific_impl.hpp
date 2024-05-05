@@ -40,7 +40,21 @@ inline const char *get_plugin_extension() { return ".so"; }
 // Return paths to check for plugins
 inline std::vector<std::filesystem::path> get_search_paths()
 {
-    std::vector<std::filesystem::path> paths = { get_executable_dir(), get_executable_dir().append("plugins"), "~/.image-filter/plugins"};
+    std::vector<std::filesystem::path> paths = {
+        get_executable_dir(), get_executable_dir().append("plugins"), "~/.image-filter/plugins"};
     return paths;
 }
 #endif
+
+// A wrapper around get_function_by_name, which throws a runtime error if the symbol is not found
+inline void *get_symbol(DLLHandle handle, const char *name)
+{
+    void *fptr = get_function_by_name(handle, name);
+    if (!fptr)
+    {
+        auto err = get_dll_error();
+        close_handle(handle);
+        throw std::runtime_error(err);
+    }
+    return fptr;
+}
