@@ -13,8 +13,7 @@ These filters could be implemented directly in the main application but that wou
 - Dynamic loading of code using shared objects / DLLs
 - Command line application
 
-## Possible Usage
-
+## Planned Usage
 ```
 $ ls plugins
 blur.so sharpen.so filters_3.so
@@ -29,18 +28,44 @@ filters_3.so
 	A - FilterA
 	B - FilterB
 	C - FilterC
-To run a filter type
-image-filter <input_file_name> <filter_name> <filter params> 
 ```
-
-Example:
+Interactive mode:
 ```
-$ image-filter cat.png blur 3
+$ image-filter
+> load cat.png 
+> blur 50
+> grayscale
+> save cat_out.png
+> exit
 ```
 
 ## API
 
 A plugin manager should read all shared objects / DLLs in a directory, use `dlopen` or `LoadLibraryEx` to load it, then find the required symbols.
+
+The plugin has the following API available to use.
+```
+uint8_t *ImageFilter_create_image(int width, int height, int channels);
+bool ImageFilter_write_image(const char *filename, int width, int height, int channels, uint8_t *data);
+void ImageFilter_destroy_image(uint8_t *data);
+void ImageFilter_set_image(int width, int height, int channels, uint8_t* data);
+int ImageFilter_get_width();
+int ImageFilter_get_height();
+int ImageFilter_get_channels();
+uint8_t* ImageFilter_get_image();
+bool ImageFilter_load_image(const char *filename, int width, int height, int channels, uint8_t *data);
+```
+
+The Plugin must implement the following API
+```
+extern "C" 
+{
+    const char* Plugin_Name()
+    {
+        
+    }
+}
+```
 
 ## How to run?
 

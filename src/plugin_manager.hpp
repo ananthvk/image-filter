@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+/*
+ * This class represents a plugin (shared object).
+ * It holds a handle to the shared library, and path to the shared library file
+ */
 class Plugin
 {
     DLLHandle handle;
@@ -19,6 +23,9 @@ class Plugin
     const char *get_name(); 
 };
 
+/*
+ * This class manages a number of plugins.
+ */
 class PluginManager
 {
     std::vector<std::shared_ptr<Plugin>> plugins;

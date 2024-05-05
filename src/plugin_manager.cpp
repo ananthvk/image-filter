@@ -11,12 +11,16 @@ Plugin::Plugin(const std::filesystem::path &path) : path(path)
     void *fptr = get_function_by_name(handle, "Plugin_Name");
     if (!fptr)
     {
-        throw std::runtime_error(get_dll_error());
+        auto err = get_dll_error();
+        dlclose(handle);
+        // If any of them is not found, throw an error
+        throw std::runtime_error(err);
     }
     plugin_get_name = (const char *(*)())fptr;
     std::cout << "[INFO] Loaded plugin: " << path.filename() << std::endl;
 }
 
+// Handle is automatically closed when destructor is run
 Plugin::~Plugin()
 {
     close_handle(handle);
@@ -24,19 +28,21 @@ Plugin::~Plugin()
               << "Unloaded " << path.filename() << std::endl;
 }
 
+// Return the name of the plugin
 const char *Plugin::get_name() { return plugin_get_name(); }
 
+// This function loads all shared objects from the given path
 void PluginManager::load_from_directory(const std::filesystem::path &path)
 {
     // First check if the path exists
     if (!std::filesystem::exists(path))
     {
-        std::cerr << "[ERROR] Loading plugins: " << path << " does not exist" << std::endl;
+        // std::cerr << "[ERROR] Loading plugins: " << path << " does not exist" << std::endl;
         return;
     }
     if (!std::filesystem::is_directory(path))
     {
-        std::cerr << "[ERROR] Loading plugins: " << path << " is not directory" << std::endl;
+        // std::cerr << "[ERROR] Loading plugins: " << path << " is not directory" << std::endl;
         return;
     }
     for (const auto &dirEntry : std::filesystem::directory_iterator(path))
