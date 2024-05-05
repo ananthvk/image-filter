@@ -10,8 +10,7 @@ extern "C"
         return (uint8_t *)malloc(width * height * channels);
     }
 
-    bool ImageFilter_write_image(const char *filename, int width, int height, uint8_t *data,
-                                 int channels)
+    bool ImageFilter_write_image(const char *filename, int width, int height, int channels, uint8_t *data)
     {
         if (!stbi_write_png(filename, width, height, channels, data, width * channels))
         {

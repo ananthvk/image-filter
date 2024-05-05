@@ -11,7 +11,7 @@ extern "C"
             img[i * 4 + 2] = 0;
             img[i * 4 + 3] = 255;
         }
-        ImageFilter_write_image("First_plugin.png", 400, 400, img, 4);
+        ImageFilter_write_image("First_plugin.png", 400, 400, 4, img);
         ImageFilter_destroy_image(img);
         return "Example of a plugin";
     }
