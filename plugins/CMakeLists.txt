@@ -1,6 +1,6 @@
 project(plugins)
 
-set(SOURCES basic_filters.cpp)
+set(SOURCES basic_filters.cpp core.cpp)
 foreach(SRC ${SOURCES})
     get_filename_component(LIB_NAME ${SRC} NAME_WE)
     add_library(${LIB_NAME} SHARED ${SRC})

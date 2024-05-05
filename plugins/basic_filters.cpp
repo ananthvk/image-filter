@@ -4,7 +4,7 @@ extern "C"
 {
     const char *Plugin_Name() { return "Basic filters"; }
 
-    const char *Plugin_Id() { return "000"; }
+    const char *Plugin_Id() { return "001"; }
 
     void *blur(void *arg) { std::cout << "Blur filter is being run" << std::endl; return NULL;}
 

@@ -60,7 +60,13 @@ extern "C"
 
     bool ImageFilter_load_image(const char *filename)
     {
-        image.data = stbi_load(filename, &(image.height), &(image.width), &(image.channels), 0);
+        // If an image is already loaded, free it
+        if(loaded)
+        {
+            free(image.data);
+            loaded = false;
+        }
+        image.data = stbi_load(filename, &(image.width), &(image.height), &(image.channels), 0);
         if (!image.data)
         {
             return false;
