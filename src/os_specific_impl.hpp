@@ -13,7 +13,7 @@
 typedef void *DLLHandle;
 
 // Loads a shared object using dlopen() and returns the opened handle
-inline void *load_handle(const char *filename) { return dlopen(filename, RTLD_LAZY | RTLD_GLOBAL); }
+inline void *load_handle(const char *filename) { return dlopen(filename, RTLD_LAZY | RTLD_LOCAL); }
 
 // Returns a dlerror() as std::string
 inline std::string get_dll_error() { return std::string(dlerror()); }
