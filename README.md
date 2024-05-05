@@ -74,3 +74,7 @@ It also allows users to extend functionality by installing custom plugins.
 
 Disadvantages include increase in complexity of code, dependency on platform specific features or libraries, increased testing and slightly slower code. 
 
+## TODOs
+- [ ] Better error messages in case of failure
+- [ ] Support other file extensions while saving (currently only png)
+
