@@ -17,19 +17,25 @@ Plugin::Plugin(const std::filesystem::path &path) : path(path)
         throw std::runtime_error(err);
     }
     plugin_get_name = (const char *(*)())fptr;
+    fptr = get_function_by_name(handle, "Plugin_Id");
+    if (!fptr)
+    {
+        auto err = get_dll_error();
+        dlclose(handle);
+        // If any of them is not found, throw an error
+        throw std::runtime_error(err);
+    }
+    plugin_get_id = (const char *(*)())fptr;
     std::cout << "[INFO] Loaded plugin: " << path.filename() << std::endl;
 }
 
 // Handle is automatically closed when destructor is run
-Plugin::~Plugin()
-{
-    close_handle(handle);
-    std::cout << "[INFO] "
-              << "Unloaded " << path.filename() << std::endl;
-}
+Plugin::~Plugin() { close_handle(handle);}
 
 // Return the name of the plugin
 const char *Plugin::get_name() { return plugin_get_name(); }
+
+const char *Plugin::get_id() { return plugin_get_id(); }
 
 // This function loads all shared objects from the given path
 void PluginManager::load_from_directory(const std::filesystem::path &path)
@@ -37,12 +43,10 @@ void PluginManager::load_from_directory(const std::filesystem::path &path)
     // First check if the path exists
     if (!std::filesystem::exists(path))
     {
-        // std::cerr << "[ERROR] Loading plugins: " << path << " does not exist" << std::endl;
         return;
     }
     if (!std::filesystem::is_directory(path))
     {
-        // std::cerr << "[ERROR] Loading plugins: " << path << " is not directory" << std::endl;
         return;
     }
     for (const auto &dirEntry : std::filesystem::directory_iterator(path))
@@ -60,7 +64,17 @@ void PluginManager::load_from_directory(const std::filesystem::path &path)
             try
             {
                 // Load the plugin
-                plugins.push_back(std::make_shared<Plugin>(dirEntry.path().generic_string()));
+                auto plugin = std::make_shared<Plugin>(dirEntry.path().generic_string());
+                // Check if the plugin is already loaded, i.e. this is a duplicate
+                // If so, remove it
+                if (plugin_ids.find(plugin->get_id()) != plugin_ids.end())
+                {
+                    std::cout << "[INFO] Duplicate plugin " << dirEntry.path().filename()
+                              << " found. Removing it" << std::endl;
+                    continue;
+                }
+                plugin_ids.insert(plugin->get_id());
+                plugins.push_back(plugin);
             }
             catch (std::exception &e)
             {
