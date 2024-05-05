@@ -14,21 +14,6 @@ These filters could be implemented directly in the main application but that wou
 - Command line application
 
 ## Planned Usage
-```
-$ ls plugins
-blur.so sharpen.so filters_3.so
-
-$ image-filter -h
-Loaded three 5 filters
-blur.so
-	blur - Blur filter
-sharpen.so
-	sharpen - Sharpen filter
-filters_3.so
-	A - FilterA
-	B - FilterB
-	C - FilterC
-```
 Interactive mode:
 ```
 $ image-filter
@@ -42,19 +27,6 @@ $ image-filter
 ## API
 
 A plugin manager should read all shared objects / DLLs in a directory, use `dlopen` or `LoadLibraryEx` to load it, then find the required symbols.
-
-The plugin has the following API available to use.
-```
-uint8_t *ImageFilter_create_image(int width, int height, int channels);
-bool ImageFilter_write_image(const char *filename, int width, int height, int channels, uint8_t *data);
-void ImageFilter_destroy_image(uint8_t *data);
-void ImageFilter_set_image(int width, int height, int channels, uint8_t* data);
-int ImageFilter_get_width();
-int ImageFilter_get_height();
-int ImageFilter_get_channels();
-uint8_t* ImageFilter_get_image();
-bool ImageFilter_load_image(const char *filename, int width, int height, int channels, uint8_t *data);
-```
 
 The Plugin must implement the following API
 ```
@@ -83,6 +55,7 @@ extern "C"
 ## How to run?
 
 Currently, for demonstrating runtime loading of plugins, this project builds a subproject `plugins`, after which the shared library files are stored in `plugins` folder of the build directory.
+Practically, the plugins will be built separately and then copied over to the plugins folder.
 
 To run this project,
 ```
@@ -94,4 +67,10 @@ $ cmake ..
 $ cmake --build .
 $ ./image-filter
 ```
+
+## Advantages and disadvantages of plugin system
+Advantage of a plugin system is that it improves flexiblity and permits parallel development. Many developers can develop various components (here, filters) parallely. As the main application does not need to be recompiled each time, it can save testing and development time.
+It also allows users to extend functionality by installing custom plugins.
+
+Disadvantages include increase in complexity of code, dependency on platform specific features or libraries, increased testing and slightly slower code. 
 
