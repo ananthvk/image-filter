@@ -78,3 +78,5 @@ Disadvantages include increase in complexity of code, dependency on platform spe
 - [ ] Better error messages in case of failure
 - [ ] Support other file extensions while saving (currently only png)
 
+## Note:
+Currently does not run on Windows, works only on Linux
