@@ -15,7 +15,7 @@ bool PluginManager_command_exists(const char *command)
 
 Plugin::Plugin(const std::filesystem::path &path) : path(path)
 {
-    handle = load_handle(path.c_str());
+    handle = (DLLHandle)load_handle(path.generic_string().c_str());
     if (!handle)
     {
         throw std::runtime_error(get_dll_error());

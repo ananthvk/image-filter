@@ -6,7 +6,7 @@ extern "C"
 
     const char *Plugin_Id() { return "001"; }
 
-    void *grayscale_filter(void *arg)
+    void *grayscale_filter(void*)
     {
         if (!ImageFilter_get_image())
         {
@@ -26,7 +26,7 @@ extern "C"
         uint8_t *img = ImageFilter_get_image();
         for (int i = 0; i < width * height; i++)
         {
-            int avg = (img[i * channels] + img[i * channels + 1] + img[i * channels + 2]) / 3;
+            uint8_t avg = ((img[i * channels] + img[i * channels + 1] + img[i * channels + 2]) / 3)%256;
             img[i * channels] = avg;
             img[i * channels + 1] = avg;
             img[i * channels + 2] = avg;

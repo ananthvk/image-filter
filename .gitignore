@@ -38,4 +38,5 @@
 build/
 builddir/
 subprojects/googletest-*
+**/.vs
 subprojects/packagecache

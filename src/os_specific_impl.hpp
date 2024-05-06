@@ -2,6 +2,57 @@
 #if defined(_WIN64) || defined(_WIN32)
 #define EXPORT __declspec(dllexport)
 #define IMPORT __declspec(dllimport)
+#include <filesystem>
+#include <stdlib.h>
+#include <string>
+#include <vector>
+#include<windows.h>
+
+typedef HINSTANCE DLLHandle;
+
+// Loads a shared object using dlopen() and returns the opened handle
+inline void *load_handle(const char *filename) { return LoadLibrary(filename); }
+
+// Returns a dlerror() as std::string
+inline std::string get_dll_error() { 
+    DWORD error_id = GetLastError();
+    if (!error_id)
+    {
+        // No errors
+        return std::string();
+    }
+    return std::system_category().message(error_id);
+}
+
+// Get a symbol in a shared library
+inline void *get_function_by_name(DLLHandle handle, const char *name)
+{ 
+    return (void*)GetProcAddress(handle, name);
+}
+
+// Close the shared object handle
+inline void close_handle(DLLHandle handle) { FreeLibrary(handle); }
+
+// Return path to the directory in which the executable program is present
+inline std::filesystem::path get_executable_dir()
+{
+    TCHAR szFileName[MAX_PATH];
+    GetModuleFileName(NULL, szFileName, MAX_PATH);
+    return std::filesystem::canonical(szFileName).parent_path();
+}
+
+// Return the shared object extension for this system (.dll)
+inline const char *get_plugin_extension() { return ".dll"; }
+
+// Return paths to check for plugins
+inline std::vector<std::filesystem::path> get_search_paths()
+{
+    std::vector<std::filesystem::path> paths = {
+        get_executable_dir(), get_executable_dir().append("plugins"), "~/.image-filter/plugins"};
+    return paths;
+}
+
+
 #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
 #define EXPORT __attribute__((visibility("default")))
 #define IMPORT

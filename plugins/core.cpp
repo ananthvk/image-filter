@@ -6,7 +6,7 @@ extern "C"
 
     const char *Plugin_Id() { return "000"; }
 
-    void *load_image(void *arg)
+    void *load_image(void *)
     {
         std::cout << "Filename: ";
         std::string filename;
@@ -19,7 +19,7 @@ extern "C"
         return NULL;
     }
 
-    void *save_image(void *arg)
+    void *save_image(void *)
     {
         if (!ImageFilter_get_image())
         {
@@ -39,7 +39,7 @@ extern "C"
         return NULL;
     }
 
-    void *get_image_info(void *arg)
+    void *get_image_info(void *)
     {
 
         if (!ImageFilter_get_image())

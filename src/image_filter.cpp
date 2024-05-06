@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <string>
 
-#pragma pack(push, 1)
-
 static struct Image
 {
     std::string filename;
@@ -18,7 +16,6 @@ static struct Image
     int channels;
 } image;
 
-#pragma pop
 bool loaded = false;
 
 
