@@ -1,6 +1,5 @@
 project(image-filter CXX)
-set(SOURCES main.cpp plugin_manager.cpp image_filter.cpp)
-# Enables -rdynamic flag(GCC), exports all symbols in the executable
-set(CMAKE_EXECUTABLE_ENABLE_EXPORTS TRUE)
+set(SOURCES main.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(${PROJECT_NAME} if-api)

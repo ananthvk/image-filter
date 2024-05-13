@@ -12,5 +12,6 @@ else()
   add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-parameter)
 endif()
 
+add_subdirectory(if-api)
 add_subdirectory(src)
 add_subdirectory(plugins)

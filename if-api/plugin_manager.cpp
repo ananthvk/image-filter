@@ -1,5 +1,6 @@
 #include "plugin_manager.hpp"
 #include "image_filter.h"
+#include "os_specific_impl.hpp"
 #include <map>
 
 static std::map<std::string, fptr> commands;
@@ -128,12 +129,15 @@ void PluginManager::list_commands()
 
 void PluginManager::execute_command(const std::string &command)
 {
-    if(commands.find(command) != commands.end())
+    if (commands.find(command) != commands.end())
     {
         commands[command](NULL);
     }
     else
     {
-        std::cerr << "Unrecognized command \"" << command <<"\", type \"list\" to see list of available commands" << std::endl;
+        std::cerr << "Unrecognized command \"" << command
+                  << "\", type \"list\" to see list of available commands" << std::endl;
     }
 }
+
+std::vector<std::filesystem::path> PluginManager::get_search_paths() { return ::get_search_paths(); }
